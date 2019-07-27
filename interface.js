@@ -1,6 +1,6 @@
 function setup() {
 	
-	
+	jrs = new Controller();
 	
 }
 

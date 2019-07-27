@@ -2,15 +2,14 @@ class Controller {
 	
 	constructor() {
 		
-		this.machines = [new Machine(this)];
-		this.machineCount = 1;
+		this.machines = [];
 		this.busyMachines = [];
-		this.freeMachines = this.machines;
+		this.freeMachines = [];
 		this.data = [];
-		this.dataStatus = [];
 		this.controllerStatus = "OFF";
 		this.avg = 0;
-		this.queryQueue = [];
+		this.queryQueue = []; //A queue entry defines a zone as:[length, starting index, end index, approximate average]
+		this.zoneLimitSize = 10;
 		
 		/*The controller can be in states:
 		DONE: Sorting done
@@ -20,27 +19,42 @@ class Controller {
 		
 	}
 	
+	setZoneLimit(n) {
+		
+		this.zoneLimitSize = n;
+		return true;
+		
+	}
+	
 	setMachines(n) {
 		
-		if (this.controllerStatus != "OFF") {return false;}
+		if (this.controllerStatus == "WORK") {return false;}
+		
+		this.machines = [];
+		this.freeMachines = [];
 		
 		for (let i = 0; i < n; i++) {
 			
 			this.machines[i] = new Machine(this);
-			this.machines[i].setZone();			
+			this.freeMachines[i] = this.machines[i];
+			
 		}
 		
+		this.busyMachines = [];
 		this.controllerStatus = "OFF";
 		return true;
 		
 	}
 	
-	set(n) {
+	go() {
 		
-		this.setMachines();
 		if (this.busyMachines.length + this.freeMachines.length != this.machines.length) {return false;}
+		if (this.machines.length < 1) {return false;}
 		if (this.data.length == 0) {return false;}
 		if (this.dataStatus.length != this.data.length) {return false;}
+		
+		//Create initial task
+		this.query(this.data.length, 0, this.data.length - 1, this.avg);
 		
 		this.controllerStatus = "WORK";
 		return true;
@@ -77,6 +91,8 @@ class Controller {
 			
 		}
 		
+		return true;
+		
 	}
 	
 	//Move machines that finished its jobs to freeMachines
@@ -95,11 +111,8 @@ class Controller {
 		
 	}
 	
-	//Function to be called from all different machines
+	//Function to be called only from machines
 	swap(a, b) {
-		
-		//Swap the value if both are in the same zone
-		if (this.dataStatus[a] != this.dataStatus[b]) {return false;}
 		
 		let temp = this.data[a];
 		this.data[a] = this.data[b];
@@ -109,10 +122,22 @@ class Controller {
 		
 	}
 	
+	addData(data) {
+		
+		if (this.controllerStatus != "OFF") {return false;}
+		
+		this.data.push(data);
+		return true;
+		
+	}
+	
 	step() {
 		
-		if (this.controllerStatus == "OFF") {this.set(); return false;}
+		if (this.controllerStatus == "OFF") {return false;}
 		if (this.controllerStatus == "DONE") {return false;}
+		
+		this.freeTheMachines();
+		this.assignQuery();
 		
 		for (let i = 0; i < this.machines.length; i++) {
 			
@@ -124,9 +149,9 @@ class Controller {
 		
 	}
 	
-	query(n, machine) {
+	query(n, start, end, avg) {
 		
-		this.queryQueue.push([n, machine]);
+		this.queryQueue.push([n, start, end, avg]);
 		
 	}
 	
