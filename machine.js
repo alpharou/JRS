@@ -54,7 +54,8 @@ class Machine {
 				
 				//Create two queries and go DONE
 				this.controller.query(this.leftPivot - this.start, this.start, this.leftPivot);
-				this.controller.query(this.end - this.leftPivot + 1, this.leftPivot +1, this.end);
+				if(this.end - this.leftPivot + 1 > 1) {this.controller.query(this.end - this.leftPivot + 1, this.leftPivot +1, this.end);}
+				
 				this.machineStatus = "DONE";
 				return true;
 				

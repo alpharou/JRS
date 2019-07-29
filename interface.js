@@ -58,7 +58,7 @@ function setup() {
 	
 	shuffleJRS();
 	
-	jrs.setZoneLimit(10);
+	jrs.setZoneLimit(3);
 	jrs.setMachines(20);
 	jrs.go();
 	
