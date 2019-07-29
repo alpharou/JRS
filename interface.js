@@ -9,8 +9,8 @@ function windowResized() {
 
 function mousePressed() {
 	
-	noLoop();
-	redraw();
+	//noLoop();
+	//redraw();
 	
 }
 
