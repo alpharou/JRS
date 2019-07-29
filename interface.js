@@ -30,7 +30,7 @@ function shuffleJRS() {
 function setup() {
 	
 	//Graphical stuff
-	frameRate(5);
+	frameRate(60);
 	createCanvas(windowWidth, windowHeight);
   
 	wW = windowWidth;
@@ -46,7 +46,7 @@ function setup() {
 	starts = [];
 	ends = [];
 	
-	let n = 100;
+	let n = 200;
 	
 	for (let i = 0; i < n; i++) {
 		
