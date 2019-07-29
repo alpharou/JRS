@@ -46,7 +46,7 @@ function setup() {
 	starts = [];
 	ends = [];
 	
-	let n = 200;
+	let n = 500;
 	
 	for (let i = 0; i < n; i++) {
 		
@@ -58,11 +58,12 @@ function setup() {
 	
 	shuffleJRS();
 	
-	jrs.setZoneLimit(3);
-	jrs.setMachines(20);
+	jrs.setZoneLimit(15);
+	jrs.setMachines(4);
 	jrs.go();
 	
 	barWidth = wW/jrs.data.length;
+	noStroke();
 	
 }
 
@@ -90,6 +91,7 @@ function draw() {
 	}
 	
 	//Draw the initial data SORTED
+	fill(255);
 	for (let i = 0; i < data.length; i++) {
 		
 		let y = map(data[i], 100, 0, wH/2, 0);
@@ -99,8 +101,11 @@ function draw() {
 	}
 	
 	//Draw the JRS data
+	let rampCheck = jrs.data[0];
 	for (let i = 0; i < jrs.data.length; i++) {
 		
+		//for (let query of jrs.queryQueue) {if (i >= query[1] && i <= query[2]) {fill(155,155,255);}}
+		if (jrs.data[i] >= rampCheck) {fill(255); rampCheck = jrs.data[i];}
 		for (let check of leftPivots) {if (i == check) {fill(0, 255, 255);}}
 		for (let check of rightPivots) {if (i == check) {fill(255, 0, 255);}}
 		for (let check of bestBubbleIndexes) {if (i == check) {fill(155,155,255);}}
@@ -110,7 +115,7 @@ function draw() {
 		let y = map(jrs.data[i], 100, 0, wH/2, 0);
 		let x = i * barWidth;
 		rect(x, wH, barWidth, -y);
-		fill(255);
+		fill(155);
 		
 	}
 	
