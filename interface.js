@@ -9,8 +9,8 @@ function windowResized() {
 
 function mousePressed() {
 	
-	//noLoop();
-	//redraw();
+	noLoop();
+	redraw();
 	
 }
 
@@ -46,7 +46,7 @@ function setup() {
 	starts = [];
 	ends = [];
 	
-	let n = 500;
+	let n = 300;
 	
 	for (let i = 0; i < n; i++) {
 		
@@ -58,8 +58,8 @@ function setup() {
 	
 	shuffleJRS();
 	
-	jrs.setZoneLimit(15);
-	jrs.setMachines(4);
+	jrs.setZoneLimit(5);
+	jrs.setMachines(10);
 	jrs.go();
 	
 	barWidth = wW/jrs.data.length;

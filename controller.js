@@ -53,7 +53,7 @@ class Controller {
 		if (this.data.length == 0) {return "No data set";}
 		
 		//Create initial task
-		//this.setPivot();
+		this.initPivots();
 		this.query(this.data.length, 0, this.data.length - 1);
 		
 		this.controllerStatus = "WORK";
@@ -61,16 +61,18 @@ class Controller {
 		
 	}
 	
-	setPivot() {
+	initPivots() {
 		
 		let minValue = this.data[0];
 		let minIndex = 0;
+		let maxValue = this.data[0];
+		let maxIndex = 0;
 		
 		for (let i = 0; i < this.data.length; i++) {
 			
-			if (abs(this.data[i] - this.pivAvg) < minValue) {
+			if (this.data[i] <= minValue) {
 				
-				minValue = abs(this.data[i] - this.pivAvg);
+				minValue = this.data[i];
 				minIndex = i;
 				
 			}
@@ -78,6 +80,20 @@ class Controller {
 		}
 		
 		this.swap(0, minIndex);
+		
+		for (let i = 0; i < this.data.length; i++) {
+			
+			if (this.data[i] >= maxValue) {
+				
+				maxValue = this.data[i];
+				maxIndex = i;
+				
+			}
+			
+		}
+		
+		this.swap(this.data.length - 1, maxIndex);
+		return true;
 		
 	}
 	
@@ -151,7 +167,7 @@ class Controller {
 		
 		this.data.push(data);
 		
-		this.pivAvg = Math.round(this.pivAvg * ((this.data.length-1)/this.data.length) + data/this.data.length);
+		this.pivAvg = (this.pivAvg * ((this.data.length-1)/this.data.length) + data/this.data.length);
 		return true;
 		
 	}
