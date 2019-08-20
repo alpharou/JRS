@@ -43,10 +43,12 @@ function setup() {
 	leftPivots = [];
 	rightPivots = [];
 	bestBubbleIndexes = [];
+	deltaIndexes = [];
+	bestDeltaIndexes = [];
 	starts = [];
 	ends = [];
 	
-	let n = 300;
+	let n = 400;
 	
 	for (let i = 0; i < n; i++) {
 		
@@ -58,7 +60,7 @@ function setup() {
 	
 	shuffleJRS();
 	
-	jrs.setZoneLimit(5);
+	jrs.setZoneLimit(10);
 	jrs.setMachines(10);
 	jrs.go();
 	
@@ -77,6 +79,8 @@ function draw() {
 	leftPivots = [];
 	rightPivots = [];
 	bestBubbleIndexes = [];
+	deltaIndexes = [];
+	bestDeltaIndexes = [];
 	starts = [];
 	ends = [];
 	
@@ -85,6 +89,8 @@ function draw() {
 		if (machine.leftPivot != -1) {leftPivots.push(machine.leftPivot);}
 		if (machine.rightPivot != -1) {rightPivots.push(machine.rightPivot);}
 		if (machine.bestBubbleIndex != -1) {bestBubbleIndexes.push(machine.bestBubbleIndex);}
+		if (machine.deltaIndex != -1) {deltaIndexes.push(machine.deltaIndex);}
+		if (machine.bestDeltaIndex != -1) {bestDeltaIndexes.push(machine.bestDeltaIndex);}
 		if (machine.start != -1) {starts.push(machine.start);}
 		if (machine.end != -1) {ends.push(machine.end);}
 		
@@ -109,6 +115,8 @@ function draw() {
 		for (let check of leftPivots) {if (i == check) {fill(0, 255, 255);}}
 		for (let check of rightPivots) {if (i == check) {fill(255, 0, 255);}}
 		for (let check of bestBubbleIndexes) {if (i == check) {fill(155,155,255);}}
+		for (let check of deltaIndexes) {if (i == check) {fill(0, 255, 255);}}
+		for (let check of bestDeltaIndexes) {if (i == check) {fill(155,255,155);}}
 		for (let check of starts) {if (i == check) {fill(0,0,255);}}
 		for (let check of ends) {if (i == check) {fill(255,0,0);}}
 		

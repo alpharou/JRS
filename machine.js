@@ -8,6 +8,12 @@ class Machine {
 		this.machineStatus = "OFF";
 		this.leftPivot = -1;
 		this.rightPivot = -1;
+		
+		this.bestDelta;
+		this.deltaIndex = -1;
+		this.bestDeltaIndex = -1;
+		this.avg;
+		
 		this.bestBubbleIndex = -1;
 		this.bestBubbleValue;
 		
@@ -20,30 +26,14 @@ class Machine {
 		this.machineStatus = "OFF";
 		this.leftPivot = -1;
 		this.rightPivot = -1;
+		
+		this.bestDelta = NaN;
+		this.deltaIndex = -1;
+		this.bestDeltaIndex = -1;
+		this.avg = NaN;
+		
 		this.bestBubbleIndex = -1;
 		this.bestBubbleValue = NaN;
-		
-	}
-	
-	setPivot() {
-		
-		let avg = (this.controller.data[this.start] + this.controller.data[this.end])/2;
-		let minDelta = abs(avg - this.controller.data[this.leftPivot]);
-		let deltaIndex = this.leftPivot;
-		
-		for (let i = this.leftPivot; i < this.end; i++) {
-			
-			if (abs(avg - this.controller.data[i]) < minDelta) {
-				
-				minDelta = abs(avg - this.controller.data[i]);
-				deltaIndex = i;
-				
-			}
-			
-		}
-		
-		this.controller.swap(this.leftPivot, deltaIndex);
-		return true;
 		
 	}
 	
@@ -55,13 +45,17 @@ class Machine {
 		this.leftPivot = this.start + 1;
 		this.rightPivot = this.end - 1;
 		
+		this.bestDelta = this.controller.data[this.start + 1];
+		this.deltaIndex = this.start + 1;
+		this.bestDeltaIndex = this.start + 1;
+		this.avg = (this.controller.data[this.start] + this.controller.data[this.end])/2;
+		
 		this.bestBubbleValue = this.controller.data[this.rightPivot];
 		this.bestBubbleIndex = this.rightPivot;
 		
 		if(this.end - this.start > this.controller.zoneLimitSize) {
 			
-			this.setPivot();
-			this.machineStatus = "WORK(JRS)";
+			this.machineStatus = "PIV(JRS)";
 			
 		}
 		else {this.machineStatus = "WORK(BBL)";}
@@ -74,6 +68,36 @@ class Machine {
 		
 		if (this.machineStatus == "OFF") {return "Machine is OFF";}
 		if (this.machineStatus == "DONE") {return true;}
+		
+		if (this.machineStatus == "PIV(JRS)") {
+		
+			if (this.deltaIndex < this.end - 1) {
+				
+				if (abs(this.avg - this.controller.data[this.deltaIndex]) < this.bestDelta) {
+					
+					this.bestDelta = abs(this.avg - this.controller.data[this.deltaIndex]);
+					this.bestDeltaIndex = this.deltaIndex;
+					
+				}
+				
+				this.deltaIndex++;
+				return true;
+				
+			}
+			
+			if (this.deltaIndex >= this.end - 1) {
+				
+				this.controller.swap(this.leftPivot, this.bestDeltaIndex);
+				this.deltaIndex = -1;
+				this.bestDeltaIndex = -1;
+				this.machineStatus = "WORK(JRS)";
+				return true;
+				
+			}
+			
+			return "Invalid PIV(JRS) state, shouldn't end up here";
+			
+		} 
 		
 		if (this.machineStatus == "WORK(JRS)") {
 			
